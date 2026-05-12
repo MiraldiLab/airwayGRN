@@ -9,7 +9,7 @@ To load tthe track hub, navigate to [Track Data Hubs](https://genome.ucsc.edu/cg
 ### Visualization of ATAC signal tracks
 To modify viewing parameters for the chromatin accessibility tracks or to show specific subpopulations (e.g., the Th1 resting and active subpopulations), navigate to the HAE_Signal_Track settings page for this track and select the desired subopoulations to visualize, as shown below.
 
-<img width="1482" height="882" alt="Edit ATAC signal track settings" src="genomeBrowser_viz/edit_ATAC_signal_settings.png" />
+<img alt="Edit ATAC signal track settings" src="genomeBrowser_viz/edit_ATAC_signal_settings.png" />
 
 Once the changes are submitted, only the desired subpopulations appear in the browser, group auto-scaled according to the shown signal tracks.
 
