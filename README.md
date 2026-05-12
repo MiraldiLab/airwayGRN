@@ -14,7 +14,7 @@ Codebases and analysis pipelines supporting the manuscript:
 Explore the data generated in this study using our Cytoscape sessions and hosted tracks:
 
 * **[Gene Regulatory Network Visualization](pending/README.md):** Download sessions for interactive visualization of gene regulatory networks using Cytoscape.
-* **[UCSC Genome Browser Track Hub](pending/README.md):** Visualize steady-state and interferon-responsive accessible chromatin and *in silico* [maxATAC](https://doi.org/10.1371/journal.pcbi.1010863) TF binding site predictions, resolved by cell populations and timepoints.
+* **[UCSC Genome Browser Track Hub](https://github.com/MiraldiLab/airwayGRN/blob/main/genomeBrowserviz.md):** Visualize steady-state and interferon-responsive accessible chromatin and *in silico* [maxATAC](https://doi.org/10.1371/journal.pcbi.1010863) TF binding site predictions, resolved by cell populations and timepoints.
 
 ---
 
@@ -34,5 +34,6 @@ The analyses in this study were performed using R `[4.2.0]` and `[4.2.2]`. For a
 [insert table here]
 
 ### Additional Resources
-* **[maxATAC GitHub Repository](pending/README.md):** *in silico* TF binding site predictions using [maxATAC](https://doi.org/10.1371/journal.pcbi.1010863).
-* **[Inferelator Github Repository](pending/README.md):** GRN inference was performed using the [Inferelator](link.com).
+* **[maxATAC GitHub Repository](https://github.com/MiraldiLab/maxATAC):** *in silico* TF binding site predictions using [maxATAC](https://doi.org/10.1371/journal.pcbi.1010863).
+* **[Inferelator Github Repository](https://github.com/MiraldiLab/InferelatorJL):** GRN inference was performed using the [Inferelator](https://doi.org/10.1186/gb-2006-7-5-r36).
+* **[TF-TF module analysis Github Repository](https://github.com/MiraldiLab/infTRN_lassoStARS):** Codebase used for TF-TF module analysis (see [`example_Th17_tfTfModules.m`](https://github.com/MiraldiLab/infTRN_lassoStARS/blob/master/Th17_example/example_Th17_tfTfModules.m).
