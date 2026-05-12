@@ -13,7 +13,7 @@ Codebases and analysis pipelines supporting the manuscript:
 
 Explore the data generated in this study using our Cytoscape sessions and hosted tracks:
 
-* **[Gene Regulatory Network Visualization](pending/README.md):** Download sessions for interactive visualization of gene regulatory networks using Cytoscape.
+* **[Gene Regulatory Network Visualization](https://github.com/MiraldiLab/airwayGRN/blob/main/GRN_viz.md):** Download sessions for interactive visualization of gene regulatory networks using Cytoscape.
 * **[UCSC Genome Browser Track Hub](https://github.com/MiraldiLab/airwayGRN/blob/main/genomeBrowserviz.md):** Visualize steady-state and interferon-responsive accessible chromatin and *in silico* [maxATAC](https://doi.org/10.1371/journal.pcbi.1010863) TF binding site predictions, resolved by cell populations and timepoints.
 
 ---
