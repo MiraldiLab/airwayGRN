@@ -22,7 +22,7 @@ Explore the data generated in this study using our Cytoscape sessions and hosted
 
 The analysis is broken down into modular codebases. Detailed instructions for running the code within each module can be found in their respective directories.
 
-* [**TFBS enrichment in IFN-responsive chromatin**](Path/To/Directory/README.md) - Perform TFBS enrichment analysis in IFN-increased chromatin regions and accounting for steady-state accessibility
+* [**TFBS enrichment in IFN-responsive chromatin**](Codebases/Simulate_TFBS_enrich_in_IIPs.R) - Perform simulation-based TFBS enrichment analysis in IFN-increased chromatin regions and accounting for cell type-specific steady-state accessibility.
 
 ---
 
