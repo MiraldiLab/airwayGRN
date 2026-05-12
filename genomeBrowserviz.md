@@ -13,7 +13,7 @@ To modify viewing parameters for the chromatin accessibility tracks or to show s
 
 Once the changes are submitted, only the desired subpopulations appear in the browser, group auto-scaled according to the shown signal tracks.
 
-<img width="2250" height="441" alt="ISG15 example" src="track_hub_ISG15.png" />
+<img width="2250" height="441" alt="ISG15 example" src="genomeBrowser_viz/track_hub_ISG15.png" />
 
 ### Visualization of ATAC signal tracks
 By default, TFBS predictions are collapsed for each cell type and time point. You can visualize all TFs with predicted binding sites in that region for the chosen subpopulation by converting the view from "dense" to "full", as shown below.
