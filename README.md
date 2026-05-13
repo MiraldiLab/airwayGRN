@@ -26,6 +26,16 @@ The analysis is broken down into modular codebases. Detailed instructions for ru
 
 ---
 
+## Data Availability
+
+Data generated in this manuscript, including Seurat objects, have been deposited on the Gene Expression Ombinus (GEO) and publicly available using the following accession numbers:
+
+* scRNA-seq: [GSE330155](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE330155)
+* snATAC-seq: [GSE330156](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE330156)
+* snMultiome-seq: [GSE330157](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE330157)
+
+---
+
 ## System Requirements
 
 ### Software Dependencies
