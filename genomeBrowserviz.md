@@ -16,6 +16,6 @@ Once the changes are submitted, only the desired subpopulations appear in the br
 <img width="2250" height="441" alt="ISG15 example" src="genomeBrowser_viz/track_hub_ISG15.png" />
 
 ### Visualization of ATAC signal tracks
-By default, TFBS predictions are collapsed for each cell type and time point. You can visualize all TFs with predicted binding sites in that region for the chosen subpopulation by converting the view from "dense" to "full", as shown below.
+By default, TFBS predictions are collapsed for each cell type and time point. To visualize all TFs with predicted binding sites in that region for a particular subpopulation(s), change the view from "dense" to "full", as shown below.
 
 <img width="1225" height="605" alt="Expand maxATAC TFBS" src="/genomeBrowser_viz/expand_maxATAC_TFBS.png" />
