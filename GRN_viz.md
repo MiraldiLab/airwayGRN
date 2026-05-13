@@ -1,6 +1,7 @@
 ## Cytoscape Regulatory Network Visualization
 To view the gene regulatory subnetworks, you must first install [Cytoscape](https://cytoscape.org). The subnetworks visualized in the manuscript were generated using `version 3.10.4`.
 Once you have Cytoscape installed, download the `.cys` sesssion files in the [Cytoscape networks](GRN_Cytoscape_viz) folder and load to a new session as shown below.
+
 <img width="1000" alt="Cytoscape new session" src="GRN_Cytoscape_viz/load_screen.png" />
 
 ---
@@ -18,6 +19,9 @@ Explore the GRNs generated in this study using our Cytoscape sessions:
 
 ## Changing heatmap node cell type color
 To change the cell type heatmap color for gene expression (targets) and TFA (TFs), navigate to "Image/Chart 1" in the Node tab and select the first option, as shown below.
+
 <img width="1000" alt="Change heatmap color 1" src="GRN_Cytoscape_viz/Change_heatmap_color1.png" />
+
 Remove the currently selected columns and select the columns of interest. **Note that columns need to be added in reverse order (6h timepoint first)**.
+
 <img width="1000" alt="Change heatmap color 2" src="GRN_Cytoscape_viz/Change_heatmap_color2.png" />
