@@ -36,14 +36,14 @@ Data generated in this manuscript, including Seurat objects, have been deposited
 
 ---
 
-## System Requirements
-
-### Software Dependencies
-The analyses in this study were performed using R `[4.2.0]` and `[4.2.2]`. For a full list of package versions, refer to the resource table provided in the manuscript:
-
-[insert table here]
-
-### Additional Resources
+## Additional Resources
 * **[maxATAC GitHub Repository](https://github.com/MiraldiLab/maxATAC):** *in silico* TF binding site predictions using [maxATAC](https://doi.org/10.1371/journal.pcbi.1010863).
 * **[Inferelator Github Repository](https://github.com/MiraldiLab/InferelatorJL):** GRN inference was performed using the [Inferelator](https://doi.org/10.1186/gb-2006-7-5-r36).
 * **[TF-TF module analysis Github Repository](https://github.com/MiraldiLab/infTRN_lassoStARS):** Codebase used for TF-TF module analysis (see [`example_Th17_tfTfModules.m`](https://github.com/MiraldiLab/infTRN_lassoStARS/blob/master/Th17_example/example_Th17_tfTfModules.m).
+
+---
+
+## System Requirements
+
+### Software Dependencies
+The analyses in this study were performed using R `[4.2.0]` and `[4.2.2]`.
