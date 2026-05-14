@@ -7,6 +7,8 @@ Codebases and analysis pipelines supporting the manuscript:
 > **Gene regulatory networks define human airway epithelial cell types and their distinct responses to Type I interferon** \
 > *Bejjani et al.* (2026) *bioRxiv*. DOI: [https://doi.org/10.64898/2026.05.09.724010](https://doi.org/10.64898/2026.05.09.724010)
 
+<img alt="Experimental Design" src="experimental_design.jpg" />
+
 ---
 
 ## Interactive Data & Gene Regulatory Network Visualization
