@@ -39,8 +39,8 @@ Data generated in this manuscript, including Seurat objects, have been deposited
 ## Additional Resources
 * **[maxATAC GitHub Repository](https://github.com/MiraldiLab/maxATAC):** *in silico* TF binding site predictions using [maxATAC](https://doi.org/10.1371/journal.pcbi.1010863).
 * **[Inferelator Github Repository](https://github.com/MiraldiLab/InferelatorJL):** GRN inference was performed using the [Inferelator](https://doi.org/10.1186/gb-2006-7-5-r36).
-* **[TF-TF module analysis Github Repository](https://github.com/MiraldiLab/infTRN_lassoStARS):** Codebase used for TF-TF module analysis (see [`example_Th17_tfTfModules.m`](https://github.com/MiraldiLab/infTRN_lassoStARS/blob/master/Th17_example/example_Th17_tfTfModules.m).
-* **[Out-of-sample gene expression prediction](https://github.com/MiraldiLab/infTRN_lassoStARS):** Codebase used for out-of-sample gene expression prediction to determine model complexity (average number of TF regulators per gene, see [`example_workflow_Th17_r2Pred.m`](https://github.com/MiraldiLab/infTRN_lassoStARS/blob/master/Th17_example/example_workflow_Th17_r2Pred.m).
+* **[TF-TF Module Analysis Github Repository](https://github.com/MiraldiLab/infTRN_lassoStARS):** Codebase used for TF-TF module analysis (see [`example_Th17_tfTfModules.m`](https://github.com/MiraldiLab/infTRN_lassoStARS/blob/master/Th17_example/example_Th17_tfTfModules.m).
+* **[Out-of-Sample Gene Expression Prediction Github Repository](https://github.com/MiraldiLab/infTRN_lassoStARS):** Codebase used for out-of-sample gene expression prediction to determine model complexity (average number of TF regulators per gene, see [`example_workflow_Th17_r2Pred.m`](https://github.com/MiraldiLab/infTRN_lassoStARS/blob/master/Th17_example/example_workflow_Th17_r2Pred.m).
 
 ---
 
