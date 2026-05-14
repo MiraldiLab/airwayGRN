@@ -1,11 +1,11 @@
 #  Gene regulatory networks define human airway epithelial cell types and their distinct responses to Type I interferon
-[![DOI](https://img.shields.io/badge/PENDING_DOI_LINK-blue)](PENDING)
+[![DOI](https://img.shields.io/badge/PENDING_DOI_LINK-blue)](10.64898/2026.05.09.724010)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Codebases and analysis pipelines supporting the manuscript:
 
 > **Gene regulatory networks define human airway epithelial cell types and their distinct responses to Type I interferon** \
-> *Bejjani et al.* (2026) *Journal Name*. DOI: [PENDING DOI](pending)
+> *Bejjani et al.* (2026) *bioRxiv*. DOI: [https://doi.org/10.64898/2026.05.09.724010](https://doi.org/10.64898/2026.05.09.724010)
 
 ---
 
@@ -28,7 +28,7 @@ The analysis is broken down into modular codebases. Detailed instructions for ru
 
 ## Data Availability
 
-Data generated in this manuscript, including Seurat objects, have been deposited on the Gene Expression Ombinus (GEO) and publicly available using the following accession numbers:
+Data generated in this manuscript, including Seurat objects, have been deposited on the Gene Expression Ombinus (GEO) and will be made publicly available following publication using the accession numbers:
 
 * scRNA-seq: [GSE330155](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE330155)
 * snATAC-seq: [GSE330156](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE330156)
@@ -40,6 +40,7 @@ Data generated in this manuscript, including Seurat objects, have been deposited
 * **[maxATAC GitHub Repository](https://github.com/MiraldiLab/maxATAC):** *in silico* TF binding site predictions using [maxATAC](https://doi.org/10.1371/journal.pcbi.1010863).
 * **[Inferelator Github Repository](https://github.com/MiraldiLab/InferelatorJL):** GRN inference was performed using the [Inferelator](https://doi.org/10.1186/gb-2006-7-5-r36).
 * **[TF-TF module analysis Github Repository](https://github.com/MiraldiLab/infTRN_lassoStARS):** Codebase used for TF-TF module analysis (see [`example_Th17_tfTfModules.m`](https://github.com/MiraldiLab/infTRN_lassoStARS/blob/master/Th17_example/example_Th17_tfTfModules.m).
+* **[Out-of-sample gene expression prediction](https://github.com/MiraldiLab/infTRN_lassoStARS):** Codebase used for out-of-sample gene expression prediction to determine model complexity (average number of TF regulators per gene, see [`example_workflow_Th17_r2Pred.m`](https://github.com/MiraldiLab/infTRN_lassoStARS/blob/master/Th17_example/example_workflow_Th17_r2Pred.m).
 
 ---
 
