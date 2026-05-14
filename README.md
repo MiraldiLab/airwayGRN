@@ -25,6 +25,7 @@ Explore the data generated in this study using our Cytoscape sessions and hosted
 The analysis is broken down into modular codebases. Detailed instructions for running the code within each module can be found in their respective directories.
 
 * [**Cell type-specific IRG identification**](Codebases/Celltype_IRG_Identification.R) - Perform differential gene expression analysis to identify IFN-responsive genes for each cell type.
+* [**Cell type-specific IFN-responsive peak identification**](Codebases/Celltype_IRP_Identification.R) - Perform differential gene expression analysis to identify IFN-responsive peaks for each cell type.
 * [**TFBS enrichment in IFN-responsive chromatin**](Codebases/Simulate_TFBS_enrich_in_IIPs.R) - Perform simulation-based TFBS enrichment analysis in IFN-increased chromatin regions and accounting for cell type-specific steady-state accessibility.
 * [**Enrichment analyses using Fisher's exact test or GSEA**](Codebases/Simulate_TFBS_enrich_in_IIPs.R) - Perform the various enrichment analyses using Fisher's exact tests of GSEA.
 
