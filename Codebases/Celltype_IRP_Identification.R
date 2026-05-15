@@ -1,4 +1,4 @@
-# Celltype_IRP_identification.R
+# Celltype_IRP_Identification.R
 #
 # Code base used to identify IFN-responsive peaks (IRPs) in basal, suprabasal, ciliated 
 # and secretory cells (Fig. 5A)
