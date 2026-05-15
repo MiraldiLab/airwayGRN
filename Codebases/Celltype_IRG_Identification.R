@@ -1,4 +1,4 @@
-# Fig_4AB_IRG_identification.R
+# Celltype_IRG_Identification.R
 #
 # Code base used to identify IFN-responsive genes (IRGs) in basal, suprabasal, ciliated, deuterosomal 
 # and secretory cells (Fig. 4A-B)
