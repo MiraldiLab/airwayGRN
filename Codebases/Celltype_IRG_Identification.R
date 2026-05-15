@@ -9,7 +9,7 @@
 # Anthony Bejjani, Cincinnati Children's Hospital Medical Center, OH
 
 # REQUIRED DATA: 
-# Download 'haeifn_seurat_integrated.rds' from GEO (GSE330155)
+# Download 'GSE330155_scRNA_HAEifn_Seurat.rds' from GEO (GSE330155)
 # Place the downloaded file in the "inputs" folder of this repository
 
 # load necessary packages
@@ -29,7 +29,7 @@ outdir <- here('outputs')
 dir.create(outdir, recursive=T)
 
 # Load Seurat scRNA-seq object (update directory to scRNA-seq object)
-seurat_dge <- readRDS(here("inputs", "haeifn_seurat_integrated.rds"))
+seurat_dge <- readRDS(here("inputs", "GSE330155_scRNA_HAEifn_Seurat.rds"))
 
 # subset seurat object to exclude second run of donor B
 series_to_exclude <- "BRRO04_HAEintB"
