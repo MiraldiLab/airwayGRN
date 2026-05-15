@@ -1,8 +1,11 @@
 # Simulate_TFBS_enrich_in_IIPs.R
-# simulation-based TFBS enrichment analysis to identify TFs with over- or under- representation 
+#
+# Simulation-based TFBS enrichment analysis to identify TFs with over- or under- representation 
 # of TFBS in IFN-responsive peaks, while controlling for baseline accessibility in the given cell type
+#
 # Bejjani et al. (2026) "Gene regulatory networks define human airway epithelial
 # cell types and their distinct responses to type I interferon"
+#
 # Author: Anthony Bejjani, Cincinnati Children's Hospital Medical Center
 
 # load necessary packages
@@ -16,58 +19,63 @@ library(matrixStats)
 library(reshape)
 library(reshape2)
 library(ggrepel)
+library(here)
 
 ######## INPUTS ##########
 # set output directory
-outdir <- '/data/miraldiNB/anthony/projects/HAE/analysis/240811_IRP_sig_peak_enrichment'
-dir.create(outdir, recursive = T, showWarnings = F)
+outdir <- here('outputs')
+dir.create(outdir, recursive = T)
 
-# number of parallel processing cores (must be provided for empirical p-value estimation. Cannot run in serial mode; at least 2 cores need to be used)
+# Number of parallel processing cores (must be provided for empirical p-value estimation. 
+# Cannot run in serial mode; at least 2 cores need to be used)
 n.cores <- 60
 
-# gene expression pseudobulk counts
-scrna_counts <- read.delim('/data/miraldiNB/anthony/projects/HAE/analysis/230209_pseudobulk_scrna_major/scrna_IFN_bulk_major_group_combat.txt', sep='\t', header=T, row.names=1)
-colnames(scrna_counts) <- gsub('Basal_differentiating','Suprabasal', colnames(scrna_counts))
-colnames(scrna_counts) <- gsub('FOXN4','Deuterosomal',colnames(scrna_counts))
+# load gene expression pseudobulk counts
+scrna_counts <- read.delim(here('inputs','scrna_IFN_bulk_major_group_combat.txt'), sep='\t', header=T, row.names=1)
 
-# chromatin accessibility pseudobulk counts
-scatac_counts <- read.delim('/data/miraldiNB/anthony/projects/HAE/analysis/230327_scatac_pseudobulk_2cutsite/scatac_IFN_bulk_major_group_combat.txt', sep='\t', header=T, row.names=1)
-colnames(scatac_counts) <- gsub('Basal_differentiating','Suprabasal', colnames(scatac_counts))
+# load chromatin accessibility pseudobulk counts
+scatac_counts <- read.delim(here('inputs','scatac_IFN_bulk_major_group_combat.txt'), sep='\t', header=T, row.names=1)
 
-# fimo results for all reference peaks
-fimo <- read.table("/data/miraldiNB/anthony/projects/HAE/analysis/230824_TF_enrichment_analysis/peaks_scatac_IFN_minvst_5_FIMO_res.tsv", header = T)
+# load fimo results for all reference peaks
+fimo <- read.table(here('inputs','peaks_scatac_IFN_FIMO_res.tsv'), header = T)
 fimo$sequence_name <- gsub(':','-',fimo$sequence_name)
 tfs <- unique(fimo$motif_alt_id) # get all available TFs
 
-# celltype peaks (or NULL). Will need to be generated from bed files of peaks if not provided.
-file_celltype_peaks <- '/data/miraldiNB/anthony/projects/HAE/analysis/240726_IRP_sig_peak_enrichment/celltype_peaks.rds'
+# celltype peaks (or NULL). Will need to be generated from bed files if not provided. see lines 67-92.
+file_celltype_peaks <- here('inputs','celltype_peaks.rds')
+
+# if 'file_celltype_peaks' is not provided, provide the directory for celltype_timepoint peak bed files
+celltype_peaks_dir <- here('inputs','peak_bed')
 
 # irp clusters and associated cell types. data frame with rows being IRPs and a column of cluster (1 through 6)
-irp_clusters <- read.delim('/data/miraldiNB/anthony/projects/HAE/analysis/240313_fig_manuscript_atac/cluster_annot_10kb.tsv', sep='\t', header=T, row.names = 1)
+irp_clusters <- read.delim(here('inputs','irp_cluster_assignment.tsv'), sep='\t', header=T, row.names = 1)
 
-# for each peak cluster, specify the cell types that are relevant for the analysis. Here, we test the enrichment for each cell type background for each cell type.
-cluster_ref <- c('1'='Basal, Suprabasal, Ciliated, Deuterosomal, Secretory',
-                 '2'='Basal, Suprabasal, Ciliated, Deuterosomal, Secretory',
-                 '3'='Basal, Suprabasal, Ciliated, Deuterosomal, Secretory',
-                 '4'='Basal, Suprabasal, Ciliated, Deuterosomal, Secretory',
-                 '5'='Basal, Suprabasal, Ciliated, Deuterosomal, Secretory',
-                 '6'='Basal, Suprabasal, Ciliated, Deuterosomal, Secretory')
+# For each peak cluster, specify the cell types that are relevant for the analysis. 
+# Here, we test the enrichment for each cell type background for each cell type.
+cluster_ref <- c('1'='Basal, Suprabasal, Ciliated, Secretory',
+                 '2'='Basal, Suprabasal, Ciliated, Secretory',
+                 '3'='Basal, Suprabasal, Ciliated, Secretory',
+                 '4'='Basal, Suprabasal, Ciliated, Secretory',
+                 '5'='Basal, Suprabasal, Ciliated, Secretory',
+                 '6'='Basal, Suprabasal, Ciliated, Secretory')
+celltypes_oi <- c('Basal', 'Suprabasal', 'Ciliated', 'Secretory')
 
-######### RUN ##########
+######### END OF INPUTS ##########
 # conver reference peaks into GRanges object
 ref_peaks <- GRanges(
   seqnames = sapply(strsplit(rownames(scatac_counts), split='-'),"[[",1),
-  ranges = IRanges(start=as.numeric(sapply(strsplit(rownames(scatac_counts), split='-'),"[[",2)), end=as.numeric(sapply(strsplit(rownames(scatac_counts), split='-'),"[[",3))),
+  ranges = IRanges(start=as.numeric(sapply(strsplit(rownames(scatac_counts), split='-'),"[[",2)), 
+                   end=as.numeric(sapply(strsplit(rownames(scatac_counts), split='-'),"[[",3)))
 )
 
 # 1. get peaks per celltype
 if(is.null(celltype_peaks)){
   celltype_peaks <- list()
-  for (celltype in c('Basal','Basal_differentiating','Ciliated','Secretory')){
+  for (celltype in celltypes_oi){
     # for each cell type and timepoint, load the peaks and convert them to GRanges objects
-    peaks_0 <- read.delim(paste0('/data/miraldiNB/anthony/projects/HAE/analysis/221114_peaks_celltime/peaks/',celltype,'_0_peaks.bed'), sep='\t', header=F)
-    peaks_2 <- read.delim(paste0('/data/miraldiNB/anthony/projects/HAE/analysis/221114_peaks_celltime/peaks/',celltype,'_2_peaks.bed'), sep='\t', header=F)
-    peaks_6 <- read.delim(paste0('/data/miraldiNB/anthony/projects/HAE/analysis/221114_peaks_celltime/peaks/',celltype,'_6_peaks.bed'), sep='\t', header=F)
+    peaks_0 <- read.delim(file.path(celltype_peaks_dir,paste0(celltype,'_0_peaks.bed')), sep='\t', header=F)
+    peaks_2 <- read.delim(file.path(celltype_peaks_dir,paste0(celltype,'_2_peaks.bed')), sep='\t', header=F)
+    peaks_6 <- read.delim(file.path(celltype_peaks_dir,paste0(celltype,'_6_peaks.bed')), sep='\t', header=F)
     
     peaks_0 <- GRanges(
       seqnames = peaks_0[,1],
@@ -85,13 +93,14 @@ if(is.null(celltype_peaks)){
     celltype_peaks[[celltype]] <- findOverlaps(celltype_peaks[[celltype]],ref_peaks) # find reference peaks that overlap cell type peaks
     celltype_peaks[[celltype]] <- rownames(scatac_counts)[unique(as.data.frame(celltype_peaks[[celltype]])[,2])] # add them to list as peak names
   }
-  names(celltype_peaks) <- c('Basal','Suprabasal','Ciliated','Secretory')
+  names(celltype_peaks) <- celltypes_oi
   saveRDS(celltype_peaks, file.path(outdir,'celltype_peaks.rds'))
 } else {
   celltype_peaks <- readRDS(file_celltype_peaks) # load existing list if provided
 }
 
 # 2. empirical p-value calculation
+range(rowMaxs(as.matrix(scrna_counts)))
 bins <- seq(4, 10, by=6/10) # create bins of range 4 to 10 as determined from range of max VST counts distribution
 labels <- gsub("(?<!^)(\\d{3})$", ",\\1", bins, perl=T)
 rangelabels <- paste(head(labels,-1), tail(labels,-1), sep="-") # create bins
@@ -110,8 +119,7 @@ registerDoParallel(cl = my.cluster)
 
 # run empirical p-value pipeline in parallel
 # Runs 200 iterations. Can be run multiple times to increase the number of iterations
-# Environment is exported to each itration (.export = ls()) to make the necessary files
-# available
+# Environment is exported to each itration (.export = ls()) to make the necessary files available
 df_res_empirical <- foreach(
   nsample = 1:200, 
   .combine = 'rbind', 
@@ -124,8 +132,9 @@ df_res_empirical <- foreach(
 ) %dopar% {
   df_res_tmp <- NULL # dataframe to collect empirical results from each iteration
   
-  for (celltype in c('Basal','Suprabasal','Ciliated','Secretory')){
-    print(paste(nsample,celltype, sep=': '))
+  for (celltype in celltypes_oi){
+    # optional print statement of progress on iterations for each cell type
+    # print(paste(nsample,celltype, sep=': '))
     
     # subset ATAC counts to include only t=0 and cell type associated peaks
     scatac_counts_0_celltype <- scatac_counts_0[celltype_peaks[[celltype]],grepl(celltype, colnames(scatac_counts_0))]
@@ -204,7 +213,7 @@ df_res_empirical <- foreach(
 df_res_empirical <- as.data.frame(df_res_empirical)
 colnames(df_res_empirical) <- c('celltype', 'TF','iteration','OR', 'pct_irp','pct_sig')
 df_res_empirical$log2OR <- log2(as.numeric(df_res_empirical$OR))
-write.table(df_res_empirical, file.path(outdir,'df_res_empirical_200iter.tsv'), sep='\t', col.names = T, row.names = F, quote=F)
+write.table(df_res_empirical, file.path(outdir,'df_res_enrich_random.tsv'), sep='\t', col.names = T, row.names = F, quote=F)
 
 # stop cluster
 parallel::stopCluster(cl = my.cluster) 
@@ -216,7 +225,7 @@ for(tf in unique(df_res_empirical$TF)){
   for(celltype in unique(df_res_empirical$celltype)){
     logOR_cutoffs[tf, celltype] <- quantile(df_res_empirical[which(df_res_empirical$TF==tf & df_res_empirical$celltype == celltype),'log2OR'], probs=0.95, na.rm=TRUE)
   }}
-write.table(logOR_cutoffs, file.path(outdir,'df_res_empirical_cutoffs_200iter.tsv'), sep='\t', col.names = T, row.names = F, quote=F)
+write.table(logOR_cutoffs, file.path(outdir,'df_res_enrich_random_OR_cutoffs.tsv'), sep='\t', col.names = T, row.names = F, quote=F)
 
 # optional: plot mean and standard deviation plots by percent background to assess the subsamples
 df_tf_comb <- NULL
@@ -235,7 +244,7 @@ colnames(df_tf_comb) <- c('TF', 'Celltype','meanOR','sdOR','meanpct_sig')
 df_tf_comb$Celltype <- factor(df_tf_comb$Celltype, levels=c('Basal','Suprabasal','Ciliated','Secretory'))
 
 for (plot_var in c('meanOR','sdOR')){
-  pdf(file.path(outdir, paste0(plot_var,'_by_pct_sig_empirical.pdf')), height=8, width=6, compress=F)
+  pdf(file.path(outdir, paste0(plot_var,'_by_pct_sig_simulation.pdf')), height=8, width=6, compress=F)
   ggplot(df_tf_comb, aes(x=as.numeric(meanpct_sig), y=as.numeric(meanOR)))+
     geom_point(alpha=0.5)+
     geom_hline(yintercept = 0, linetype='dashed')+
@@ -245,7 +254,7 @@ for (plot_var in c('meanOR','sdOR')){
       breaks = scales::trans_breaks("log10", function(x) 10^x))
   dev.off()
 }
-pdf(file.path(outdir, 'mean_vs_sd.pdf'), height=8, width=6, compress=F)
+pdf(file.path(outdir, 'mean_vs_sd_simulation.pdf'), height=8, width=6, compress=F)
 ggplot(df_tf_comb, aes(y=as.numeric(meanOR), x=as.numeric(sdOR)))+
   geom_point(alpha=0.5)+
   geom_hline(yintercept = 0, linetype='dashed')+
@@ -253,9 +262,9 @@ ggplot(df_tf_comb, aes(y=as.numeric(meanOR), x=as.numeric(sdOR)))+
   labs(y='mean log2(OR)', x='SD log2(OR)')
 dev.off()
 
-# optional: plot individual empirical distribution for a TF of interest by celltype
+# optional: plot individual empirical distribution for a TF of interest, grouped by celltype
 tf_oi <- 'ISGF3'
-pdf(file.path(outdir, paste0(celltype,'_log2OR_distributions_empirical.pdf')), compress=F)
+pdf(file.path(outdir, paste0(celltype,'_log2OR_distributions_simulation.pdf')), compress=F)
 ggplot(df_res_empirical[which(df_res_empirical$TF==tf_oi),], aes(x=log2OR, fill=celltype)) +
   geom_histogram(position="identity", alpha=0.5, bins=50)+
   geom_vline(data=melt(logOR_cutoffs[tf_oi,]), aes(xintercept= value, color=variable),
@@ -344,14 +353,14 @@ df_res <- as.data.frame(df_res)
 colnames(df_res) <- c('IRP','celltype', 'TF','OR', 'pct_irp','pct_sig')
 df_res$log2OR <- log2(as.numeric(df_res$OR))
 df_res$sign <- sign(df_res$log2OR)
-write.table(df_res, file.path(outdir,'odds_irp_motifs_vs_signatures.tsv'), sep='\t', col.names = T, row.names = F, quote=F)
+write.table(df_res, file.path(outdir,'observed_enrich_motifs_vs_reference.tsv'), sep='\t', col.names = T, row.names = F, quote=F)
 df_res[which(df_res$log2OR == -Inf),'log2OR'] <- 0
 
 # estimate p-values for empirical distributions (Gaussian estimate)
 # p-values are corrected using BH method for each cell type across all tests
 df_res$pval <- NA
 df_res$padj <- NA
-for (celltype in c('Basal','Suprabasal','Ciliated','Secretory')){
+for (celltype in celltypes_oi){
   for(tf in unique(df_res[which(df_res$celltype == celltype),'TF'])){
     values_tmp <- df_res_empirical[which(df_res_empirical$celltype == celltype & df_res_empirical$TF == tf),'log2OR']
     pvals_tmp <- (1-pnorm(abs(((df_res[which(df_res$celltype == celltype & df_res$TF == tf),'log2OR']-mean(values_tmp[is.finite(values_tmp)]))/sd(values_tmp[is.finite(values_tmp)]))),
@@ -366,7 +375,7 @@ df_res$log10padj <- -log10(df_res$padj)
 # filter results based on empirical OR cutoffs, keeping all timepoints.
 # this is done after p-value estimation and correction
 df_res_filtered_empirical <- NULL
-for(celltype in c('Basal','Suprabasal','Ciliated','Secretory')){
+for(celltype in celltypes_oi){
   for (tf in rownames(logOR_cutoffs)[!is.na(logOR_cutoffs[,celltype])]){
     if(!is.na(logOR_cutoffs[tf,celltype])){
       if(nrow(df_res[which(df_res$celltype == celltype & df_res$TF == tf),]) > 0){
@@ -376,6 +385,4 @@ for(celltype in c('Basal','Suprabasal','Ciliated','Secretory')){
   }
 }
 df_res_filtered_empirical <- as.data.frame(df_res_filtered_empirical)
-write.table(df_res_filtered_empirical, file.path(outdir,'df_res_filtered_empirical_200iter_all_timepoints.tsv'), sep='\t', col.names = T, row.names = F, quote=F)
-
-###### END OF DATA GENERATION PORTION ######
+write.table(df_res_filtered_empirical, file.path(outdir,'df_res_filtered_observed_enrichments.tsv'), sep='\t', col.names = T, row.names = F, quote=F)
