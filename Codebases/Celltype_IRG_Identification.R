@@ -8,6 +8,10 @@
 # Author: Brad Rosenberg, Icahn School of Medicine at Mount Sinai, NY. Modified by 
 # Anthony Bejjani, Cincinnati Children's Hospital Medical Center, OH
 
+# REQUIRED DATA: 
+# Download 'haeifn_seurat_integrated.rds' from GEO (GSE330155)
+# Place the downloaded file in the "inputs" folder of this repository
+
 # load necessary packages
 library(Seurat)
 library(tidyverse)
@@ -15,12 +19,19 @@ library(sva)
 library(dplyr)
 library(purrr)
 library(edgeR)
+library(here)
 
-# Custom functions
-source('/data/miraldiNB/anthony/projects/HAE/scripts/brad_scripts/differential_gene_expression.R')
+# helper functions
+source(here('helper_differential_gene_expression.R'))
 
-# Load Seurat scRNA-seq object
-seurat_dge <- readRDS('/data/miraldiNB/anthony/projects/HAE/databank/scRNA/haeifn_seurat_integrated.rds')
+# set and create output directory
+outdir <- here('outputs')
+dir.create(outdir, recursive=T)
+
+# Load Seurat scRNA-seq object (update directory to scRNA-seq object)
+seurat_dge <- readRDS(here("inputs", "haeifn_seurat_integrated.rds"))
+
+# subset seurat object to exclude second run of donor B
 series_to_exclude <- "BRRO04_HAEintB"
 Idents(seurat_dge) <- "orig.ident"
 seurat_dge <- subset(seurat_dge, 
