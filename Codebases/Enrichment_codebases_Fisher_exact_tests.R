@@ -1,42 +1,49 @@
-# Enrichment_analyses.R
+# Enrichment_codebases_Fisher_exact_tests.R
 #
 # Code bases pertaining to the enrichment tests performed, as indicated
 # by figure numbers and panel letters. For enrichment of TFBSs in cell type-specific
-# IFN-responsive peaks (Fig. 5H-M), refer to XXXX.R
+# IFN-responsive peaks (Fig. 5H-M), refer to Simulate_TFBS_enrich_in_IIPs.R
 #
 # Bejjani et al. (2026) "Gene regulatory networks define human airway epithelial
 # cell types and their distinct responses to type I interferon"
 # Author: Anthony Bejjani, Cincinnati Children's Hospital Medical Center
 
+# load necessary packages
+library(here)
+library(fgsea)
+
+# set output directory
+outdir <- here('outputs')
+
 # Common data files used in the enrichment analyses
 ## Cell type IRGs
-list_celltype_irgs <- readRDS('/Volumes/miraldiNB/anthony/projects/HAE/analysis/230611_scrna_irg_updated/celltype_irgs_p5l1.rds')
+list_celltype_irgs <- readRDS(here('inputs','celltype_irgs_p5l1.rds'))
 
 ## IRG cluster assignments
-irg_clusters <- read.delim('/data/miraldiNB/anthony/projects/HAE/analysis/240429_IRG_heatmaps/cluster_annot.tsv',sep='\t', header=T, row.names = 1)
+irg_clusters <- read.delim(here('inputs','cluster_annot.tsv'),sep='\t', header=T, row.names = 1)
 
 ## IRP cluster assignments
-irp_clusters <- read.delim('/Volumes/miraldiNB/anthony/projects/HAE/analysis/240313_fig_manuscript_atac/cluster_annot_10kb.tsv', sep='\t', header=T, row.names = 1)
+irp_clusters <- read.delim(here('inputs','cluster_annot_10kb.tsv'), sep='\t', header=T, row.names = 1)
 
 ## GRN
-network <- read.delim('/data/miraldiNB/anthony/Inferelator_Julia/outputs/251125_HAE_ISGF3_GAS_combined/combined/combined_sp.tsv', sep='\t', header=F)
+network <- read.delim(here('inputs','combined_sp.tsv'), sep='\t', header=F)
 
 ## gene signatures
-scrna_signatures <- read.table('/data/miraldiNB/anthony/projects/HAE/analysis/221128_scrna_IFN_signature_genes_major/t0/group_major_log2FC0p58_FDR1/df_sig_group_major_log2FC0p58_FDR1_all.txt',sep='\t',header=T)
+scrna_signatures <- read.table(here('inputs','df_sig_group_major_log2FC0p58_FDR1_all.txt'),sep='\t',header=T)
 
 ## counts matrices
-scatac_counts <- read.delim('/data/miraldiNB/anthony/projects/HAE/analysis/230327_scatac_pseudobulk_2cutsite/scatac_IFN_bulk_major_group_combat.txt', sep='\t', header=T, row.names=1)
-scrna_counts <- read.delim('/data/miraldiNB/anthony/projects/HAE/analysis/230209_pseudobulk_scrna_major/scrna_IFN_bulk_major_group_combat.txt', sep='\t', header=T, row.names=1)
+scatac_counts <- read.delim(here('inputs','scatac_IFN_bulk_major_group_combat.txt'), sep='\t', header=T, row.names=1)
+scrna_counts <- read.delim(here('inputs','scrna_IFN_bulk_major_group_combat.txt'), sep='\t', header=T, row.names=1)
 
 ## GO database
-GO_db <- readRDS('/Volumes/miraldiLab/databank/GeneSets/Hs-GeneSets/240806_GO.rds')
+GO_db <- readRDS(here('inputs','GOBP_genesets.rds'))
 GO_db <- lapply(GO_db, function(x) intersect(x, rownames(counts)))
 GO_db <- GO_db[lapply(GO_db, length) >= 5]
 
 GO_db_irg <- lapply(GO_db, function(x) intersect(x, rownames(irg_clusters)))
 GO_db_irg <- GO_db_irg[lapply(GO_db_irg, length) >= 5]
 
-bed_ref_peaks <- read.delim('/data/miraldiNB/anthony/projects/HAE/analysis/230327_scatac_pseudobulk_2cutsite/ref_peaks_vst5p5_tss_2kb.bed', sep='\t', header=F, row.names = NULL)
+bed_ref_peaks <- read.delim(here('inputs','ref_peaks_TSS_2kb_overlap.bed'), sep='\t', header=F, row.names = NULL)
 bed_ref_peaks$peak <- paste(bed_ref_peaks$V5,bed_ref_peaks$V6,bed_ref_peaks$V7, sep='-')
 bed_ref_peaks <- bed_ref_peaks[,c('peak','V4')]
 colnames(bed_ref_peaks) <- c('peak','gene')
@@ -56,7 +63,7 @@ res_list <- list()
 for (ct_bed in cell_types) {
   
   # Construct the exact file path for intersection of peaks with TSSs
-  bed_file <- paste0("/data/miraldiNB/anthony/projects/HAE/analysis/260311_multiome_signature_peaks/tss_overlap/min_genes/peaks_sig_group_major_log2FC1p5_FDR10_",ct_bed,"_0_up_intersect.bed")
+  bed_file <- here('inputs', 'peaks', paste0(ct_bed,'_0_up_intersect.bed'))
   
   if (file.exists(bed_file)) {
     # Load the bed file. V7 contains the gene name from the -b file
@@ -158,7 +165,7 @@ for(tf in unique(df_res_cores_t0$tf)){
 write.table(df_res_cores, file.path(outdir,'df_res_cores_t0.tsv'), sep='\t', col.names = T, row.names = F, quote=F)
 
 ##### Fig. 2B, 2H, 3B - Enrichment of shared TF module targets in GO biological processes #####
-networks_folder <- '/data/miraldiNB/anthony/projects/HAE/analysis/250318_figure_modifications/figure6/network_irg/zOverlaps_combEdge_fdr5_tfMin20_targMin1/Top7_Networks_clust7'
+networks_folder <- here('inputs','Top7_Networks_clust7')
 network_files <- list.files(networks_folder, pattern = "\\min2Targs_sp.tsv$", full.names = FALSE)
 
 bckgrnd <- unique(network[,2])
@@ -231,7 +238,7 @@ df_res_irg_sig_peaks <- NULL
 for(irg_clust in c(2,3,8,7,4,1,6,5)){
   print(irg_clust)
   for(celltype in c('Basal','Ciliated','Secretory')){
-    sig_peaks <- readLines(paste0('/Volumes/miraldiNB/anthony/projects/HAE/analysis/240228_scatac_IFN_signature_peaks/minor_group/DESeq2/major_group_log2FC1p5_FDR10/peaks_sig_major_group_log2FC1p5_FDR10_',celltype,'_0_up.txt'))
+    sig_peaks <- readLines(here('inputs', paste0('peaks_sig_major_group_log2FC1p5_FDR10_',celltype,'_0_up.txt')))
     sig_genes <- unique(bed_ref_peaks[bed_ref_peaks$peak %in% sig_peaks,'gene'])
     
     max_vst <- data.frame(max=rowMaxs(as.matrix(scrna_counts[,grepl(celltype, colnames(scrna_counts))])),
@@ -261,7 +268,7 @@ df_res_irg_sig <- NULL
 for(irg_clust in c(2,3,8,7,4,1,6,5)){
   print(irg_clust)
   for(celltype in c('Basal','Basal differentiating','Ciliated','FOXN4','Secretory')){
-    sig_genes <- readLines(paste0('/Volumes/miraldiNB/anthony/projects/HAE/analysis/221003_scrna_IFN_signature_genes_major/just0/group_major/DESeq2/group_major_log2FC0p58_FDR10/peaks_sig_group_major_log2FC0p58_FDR10_',celltype,'_0_up.txt'))
+    sig_genes <- readLines(here('inputs', paste0('peaks_sig_group_major_log2FC0p58_FDR10_',celltype,'_0_up.txt')))
     
     celltype <- ifelse(celltype=='Basal differentiating','Suprabasal',celltype)
     max_vst <- data.frame(max=rowMaxs(as.matrix(scrna_counts[,grepl(celltype, colnames(scrna_counts))])),
@@ -289,25 +296,19 @@ for(irg_clust in 1:8){
 }
 
 ##### Fig. 6Bi, 6Di - GSEA of TF targets in cell type-specific IFN response #####
-list_celltype_irgs2 <- readRDS('/Volumes/miraldiNB/anthony/projects/HAE/analysis/240520_CCC_TF_analysis/updated_irgs/all_genes_list_igs.rds')
-irgs <- readRDS('/Volumes/miraldiNB/anthony/projects/HAE/analysis/230611_scrna_irg_updated/celltype_irgs_p5l1.rds')
+list_celltype_irgs2 <- readRDS(here('inputs', 'all_genes_list_igs.rds'))
+irgs <- readRDS(here('inputs', 'celltype_irgs_p5l1.rds'))
 names(irgs) <- c('Basal','Suprabasal','Ciliated','Deuterosomal','Ionocyte','Secretory')
 
 # get gene rankings
 genesets <- list()
-vst_cutoffs <- c('Basal'=4.8, 'Suprabasal'=5, 'Ciliated'=4.8,'Deuterosomal'=5.1, 'Secretory'=4.8,'Ionocyte'=4.4)
 for (celltype in c('Basal','Suprabasal','Ciliated', 'Deuterosomal','Secretory')){
-  # get expressed genes
-  max_vst <- data.frame(max=rowMaxs(as.matrix(counts[,grepl(celltype, colnames(counts))])),
-                        row.names = rownames(counts))
-  
   # get target genes of interest
   irgs[[celltype]] <- cbind(irgs[[celltype]], list_celltype_irgs2[[celltype]][rownames(irgs[[celltype]]), paste0('logFC.time_',celltype,'_6_V_',celltype,'_2')])
   colnames(irgs[[celltype]])[ncol(irgs[[celltype]])] <- paste0('logFC.time_',celltype,'_6_V_',celltype,'_2')
   
   # get early irgs (2v0)
   early_irgs <- list_celltype_irgs2[[celltype]]
-  early_irgs <- early_irgs[intersect(rownames(early_irgs), rownames(max_vst)[which(max_vst$max >=vst_cutoffs[celltype])]),]
   early_irgs <- early_irgs[order(-early_irgs[,2]),]
   early_irgs2 <- early_irgs[,2]
   names(early_irgs2) <- rownames(early_irgs)
@@ -315,7 +316,6 @@ for (celltype in c('Basal','Suprabasal','Ciliated', 'Deuterosomal','Secretory'))
   
   # get late irgs (6v2)
   late_irgs <- list_celltype_irgs2[[celltype]]
-  late_irgs <- late_irgs[intersect(rownames(late_irgs), rownames(max_vst)[which(max_vst$max >=vst_cutoffs[celltype])]),]
   late_irgs <- late_irgs[order(-late_irgs[,3]),]
   late_irgs2 <- late_irgs[,3]
   names(late_irgs2) <- rownames(late_irgs)
@@ -388,11 +388,11 @@ write.table(df_res_irp_irg_enrich, file.path(outdir,'df_res_enrichment_unique_IR
 
 ##### Fig. S4D-F - Enrichment of TFBS proximal to IRG subcluster genes #####
 #TF motif/TFBS predictions
-fimo <- read.table("/data/miraldiNB/anthony/projects/HAE/analysis/230824_TF_enrichment_analysis/peaks_scatac_IFN_minvst_5_FIMO_res.tsv", header = T)
+fimo <- read.table(here('inputs', 'peaks_scatac_IFN_FIMO_res.tsv'), header = T)
 fimo$sequence_name <- gsub(':','-',fimo$sequence_name)
 fimo <- fimo[,c('sequence_name','motif_alt_id')]
 
-maxatac <- read.table("/data/miraldiLab/team/Anthony/projects/HAE/maxatac_0p1_recall/concatenated_intersect.bed", header = F)
+maxatac <- read.table(here('inputs', 'maxatac_concatenated_intersect.bed'), header = F)
 maxatac$sequence_name <- paste(maxatac$V7,maxatac$V8,maxatac$V9, sep='-')
 maxatac <- maxatac[maxatac$sequence_name %in% ref_peaks,]
 maxatac <- maxatac[,c('sequence_name','V6')]
@@ -404,7 +404,7 @@ fimo <- fimo[!(fimo$motif_alt_id %in% maxatac$motif_alt_id),]
 fimo <- rbind(fimo, maxatac)
 
 # cell type peaks
-celltype_ref_peaks <- read.delim('/data/miraldiNB/anthony/projects/HAE/analysis/230327_scatac_pseudobulk_2cutsite/ref_peaks_celltype_peaks_overlap.bed', sep='\t', header=F, row.names = NULL)
+celltype_ref_peaks <- read.delim(here('inputs', 'ref_peaks_celltype_peaks_overlap.bed'), sep='\t', header=F, row.names = NULL)
 celltype_ref_peaks$cellpeak <- paste(celltype_ref_peaks$V1,celltype_ref_peaks$V2,celltype_ref_peaks$V3, sep='-')
 celltype_ref_peaks$refpeak <- paste(celltype_ref_peaks$V5,celltype_ref_peaks$V6,celltype_ref_peaks$V7, sep='-')
 celltype_ref_peaks <- celltype_ref_peaks[,c('cellpeak','refpeak','V4')]
