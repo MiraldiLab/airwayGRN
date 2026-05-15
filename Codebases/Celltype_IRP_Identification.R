@@ -1,19 +1,34 @@
+# Celltype_IRP_identification.R
+#
+# Code base used to identify IFN-responsive peaks (IRPs) in basal, suprabasal, ciliated 
+# and secretory cells (Fig. 5A)
+#
+# Bejjani et al. (2026) "Gene regulatory networks define human airway epithelial
+# cell types and their distinct responses to type I interferon"
+# Author: Brad Rosenberg, Icahn School of Medicine at Mount Sinai, NY. Modified by 
+# Anthony Bejjani, Cincinnati Children's Hospital Medical Center, OH
+
+# REQUIRED DATA: 
+# Download 'GSE330156_snATAC_HAEifn_Seurat.rds' from GEO (GSE330156)
+# Place the downloaded file in the "inputs" folder of this repository.
+
+# load necessary packages
 library(Seurat)
 library(Signac)
 library(pals)
 library(tidyverse)
 library(sva)
+library(here)
 
-outdir <- '/data/miraldiNB/anthony/projects/HAE/analysis/231002_scatac_IRPs'
-dir.create(outdir)
+# helper functions
+source(here('helper_differential_gene_expression.R'))
 
-seurat_integrated <- readRDS('/data/miraldiNB/anthony/projects/HAE/databank/scATAC/scatac_peaks_reintegrated.rds')
+# set output directory
+outdir <- here('outputs')
+dir.create(outdir, recursive=T)
 
-source('/data/miraldiNB/anthony/projects/HAE/scripts/brad_scripts/color_palettes.R')
-source('/data/miraldiNB/anthony/projects/HAE/scripts/brad_scripts/differential_gene_expression.R')
-source('/data/miraldiNB/anthony/projects/HAE/scripts/brad_scripts/clustering.R')
-
-seurat_dge <- seurat_integrated
+# load seurat object
+seurat_dge <- readRDS(here('inputs','GSE330156_snATAC_HAEifn_Seurat.rds'))
 
 # Require a minimum of 10 cells per population per condition (cluster level)
 min_cells <- 10
@@ -74,16 +89,13 @@ plan("sequential")
 seurat_dge$major_group <- factor(seurat_dge$major_group)
 
 # Sum counts for pseudobulk dataset
-summed <- read.delim('/data/miraldiNB/anthony/projects/HAE/analysis/230327_scatac_pseudobulk_2cutsite/scatac_IFN_bulk_major_group_raw.txt',sep='\t',header=T, row.names = 1)
+summed <- read.delim(here('inputs','scatac_IFN_bulk_major_group_raw.txt'),sep='\t',header=T, row.names = 1)
 summed <- summed[,!grepl('NE',colnames(summed))]
 summed <- summed[,!grepl('Intermediate',colnames(summed))]
-curr_meta <- read.delim('/data/miraldiNB/anthony/projects/HAE/analysis/230327_scatac_pseudobulk_2cutsite/scatac_IFN_metabulk.txt',sep='\t',header=T, row.names = 1)
+curr_meta <- read.delim(here('inputs','scatac_IFN_metabulk.txt'),sep='\t',header=T, row.names = 1)
 curr_meta <- curr_meta[colnames(summed),]
 curr_meta$cell_time <- paste(curr_meta$major_group, curr_meta$Time, sep='_')
-
 summed <- SingleCellExperiment(assays = list(counts = summed), colData=curr_meta)
-write.table(counts_combat,'/data/miraldiNB/anthony/projects/HAE/analysis/230327_scatac_pseudobulk_2cutsite/scatac_counts_combat_combined.tsv',sep='\t',col.names = T, row.names = T, quote = F)
-write.table(curr_meta,'/data/miraldiNB/anthony/projects/HAE/analysis/230327_scatac_pseudobulk_2cutsite/scatac_metadata_combined.tsv',sep='\t',col.names = T, row.names = T, quote = F)
 
 # Reorder object by celltype then by timepoint
 summed <- summed[, order(summed$major_group, summed$Time)]
