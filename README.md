@@ -24,6 +24,7 @@ Explore the data generated in this study using our Cytoscape sessions and hosted
 
 The analysis is broken down into modular codebases. Detailed instructions for running the code within each module can be found in their respective directories.
 
+* [**scRNA-seq de-multiplexing and cell type annotation**](Codebases/scRNA_demux_celltype_annot.R) - PENDING - Initial scRNA-seq workflow, including de-multiplexing samples, Seurat object creation and cell type annotation.
 * [**Cell type-specific IRG identification**](Codebases/Celltype_IRG_Identification.R) - Perform differential gene expression analysis to identify IFN-responsive genes for each cell type.
 * [**Cell type-specific IFN-responsive peak identification**](Codebases/Celltype_IRP_Identification.R) - Perform differential gene expression analysis to identify IFN-responsive peaks for each cell type.
 * [**TFBS enrichment in IFN-responsive chromatin**](Codebases/Simulate_TFBS_enrich_in_IIPs.R) - Perform simulation-based TFBS enrichment analysis in IFN-increased chromatin regions and accounting for cell type-specific steady-state accessibility.
