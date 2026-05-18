@@ -13,7 +13,7 @@ Codebases and analysis pipelines supporting the manuscript:
 
 ## Interactive Data & Gene Regulatory Network Visualization
 
-Explore the data generated in this study using our Cytoscape sessions and hosted tracks:
+Explore the GRN and data generated in this study, using our Cytoscape sessions and hosted tracks:
 
 * **[Cytoscape GRN Visualization](GRN_Cytoscape_viz):** Download sessions for interactive visualization of gene regulatory networks using Cytoscape.
 * **[UCSC Genome Browser Track Hub](genomeBrowser_viz):** Visualize steady-state and interferon-responsive accessible chromatin and *in silico* [maxATAC](https://doi.org/10.1371/journal.pcbi.1010863) TF binding site predictions, resolved by cell populations and timepoints.
@@ -25,16 +25,16 @@ Explore the data generated in this study using our Cytoscape sessions and hosted
 The analysis is broken down into modular codebases. Detailed instructions for running the code within each module can be found in their respective directories.
 
 * [**scRNA-seq de-multiplexing and cell type annotation**](Codebases/scRNA_demux_celltype_annot.R) - PENDING - Initial scRNA-seq workflow, including de-multiplexing samples, Seurat object creation and cell type annotation.
-* [**Cell type-specific IRG identification**](Codebases/Celltype_IRG_Identification.R) - Perform differential gene expression analysis to identify IFN-responsive genes for each cell type.
-* [**Cell type-specific IFN-responsive peak identification**](Codebases/Celltype_IRP_Identification.R) - Perform differential gene expression analysis to identify IFN-responsive peaks for each cell type.
-* [**TFBS enrichment in IFN-responsive chromatin**](Codebases/Simulate_TFBS_enrich_in_IIPs.R) - Perform simulation-based TFBS enrichment analysis in IFN-increased chromatin regions and accounting for cell type-specific steady-state accessibility.
-* [**Enrichment analyses using Fisher's exact test or GSEA**](Codebases/Simulate_TFBS_enrich_in_IIPs.R) - Perform the various enrichment analyses using Fisher's exact tests of GSEA.
+* [**Cell type-resolved IRG identification**](Codebases/Celltype_IRG_Identification.R) - Differential gene expression analysis to identify IFN-responsive genes for each cell type.
+* [**Cell type-resolved IFN-responsive peak identification**](Codebases/Celltype_IRP_Identification.R) - Differential gene expression analysis to identify IFN-responsive peaks for each cell type.
+* [**TFBS enrichment in IFN-responsive chromatin**](Codebases/Simulate_TFBS_enrich_in_IIPs.R) - Simulation-based TFBS enrichment analysis of IFN-increased chromatin regions, accounting for cell type-specific steady-state accessibility.
+* [**Enrichment analyses using Fisher's exact test or GSEA**](Codebases/Enrichment_codebases_Fisher_exact_tests.R) - Perform the various enrichment analyses using Fisher's exact tests of GSEA.
 
 ---
 
 ## Data Availability
 
-Data generated in this manuscript, including Seurat objects, have been deposited on the Gene Expression Ombinus (GEO) and will be made publicly available following publication using the accession numbers:
+Data generated in this manuscript, including Seurat objects, have been deposited on the Gene Expression Ombinus (GEO) and will be made publicly available following the study's publication:
 
 * scRNA-seq: [GSE330155](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE330155)
 * snATAC-seq: [GSE330156](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE330156)
