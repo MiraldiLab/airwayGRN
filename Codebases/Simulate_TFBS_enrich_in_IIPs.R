@@ -20,6 +20,10 @@ library(reshape)
 library(reshape2)
 library(ggrepel)
 library(here)
+library(this.path)
+
+# set working directory to the 'Codebases' folder
+setwd(this.dir())
 
 ######## INPUTS ##########
 # set output directory
@@ -30,6 +34,8 @@ dir.create(outdir, recursive = T)
 # Cannot run in serial mode; at least 2 cores need to be used)
 n.cores <- 60
 
+# Note: you must create the 'input' folder and place any inputs in it,
+# or update the paths to where the data is stored
 # load gene expression pseudobulk counts
 scrna_counts <- read.delim(here('inputs','scrna_IFN_bulk_major_group_combat.txt'), sep='\t', header=T, row.names=1)
 
