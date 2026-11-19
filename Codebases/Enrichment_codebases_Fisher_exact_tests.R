@@ -11,11 +11,17 @@
 # load necessary packages
 library(here)
 library(fgsea)
+library(this.path)
+
+# set working directory to the 'Codebases' folder
+setwd(this.dir())
 
 # set output directory
 outdir <- here('outputs')
 
 # Common data files used in the enrichment analyses
+# Note: you must create the 'input' folder and place any inputs in it,
+# or update the paths to where the data is stored
 ## Cell type IRGs
 list_celltype_irgs <- readRDS(here('inputs','celltype_irgs_p5l1.rds'))
 
