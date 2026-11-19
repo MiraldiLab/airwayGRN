@@ -20,6 +20,10 @@ library(dplyr)
 library(purrr)
 library(edgeR)
 library(here)
+library(this.path)
+
+# set working directory to the 'Codebases' folder
+setwd(this.dir())
 
 # helper functions
 source(here('helper_differential_gene_expression.R'))
@@ -28,7 +32,9 @@ source(here('helper_differential_gene_expression.R'))
 outdir <- here('outputs')
 dir.create(outdir, recursive=T)
 
-# Load Seurat scRNA-seq object (update directory to scRNA-seq object)
+# Load Seurat scRNA-seq object
+# Note: you must create the 'input' folder and place any inputs in it,
+# or update the paths to where the data is stored
 seurat_dge <- readRDS(here("inputs", "GSE330155_scRNA_HAEifn_Seurat.rds"))
 
 # subset seurat object to exclude second run of donor B
@@ -103,6 +109,8 @@ colnames(design) <- gsub(colnames(design),
 # Set factor vectors
 ## dge_groups/celltypes to include in clustering analysis
 celltype <- unique(sample_metadata$group_major)
+timepoint <- unique(sample_metadata$timepoint)
+
 ## BUILD CONTRASTS FOR EACH CELL TYPE (Timepoint vs Baseline)
 contrasts_time <- lapply(celltype, function(celltype){
   timepoint <- timepoint[timepoint != "0"] # Remove baseline
