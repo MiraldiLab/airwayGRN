@@ -19,6 +19,10 @@ library(pals)
 library(tidyverse)
 library(sva)
 library(here)
+library(this.path)
+
+# set working directory to the 'Codebases' folder
+setwd(this.dir())
 
 # helper functions
 source(here('helper_differential_gene_expression.R'))
@@ -28,6 +32,8 @@ outdir <- here('outputs')
 dir.create(outdir, recursive=T)
 
 # load seurat object
+# Note: you must create the 'input' folder and place any inputs in it,
+# or update the paths to where the data is stored
 seurat_dge <- readRDS(here('inputs','GSE330156_snATAC_HAEifn_Seurat.rds'))
 
 # Require a minimum of 10 cells per population per condition (cluster level)
