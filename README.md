@@ -24,7 +24,7 @@ Explore the GRN and data generated in this study, using our Cytoscape sessions a
 
 The analysis is broken down into modular codebases. Detailed instructions for running the code within each module can be found in their respective directories.
 
-* [**scRNA-seq de-multiplexing and cell type annotation**](Codebases/scRNA_demux_celltype_annot.R) - PENDING - Initial scRNA-seq workflow, including de-multiplexing samples, Seurat object creation and cell type annotation.
+* [**scRNA-seq de-multiplexing and cell type annotation**](Codebases/qc_demultiplex_cluster_annotate.R) - Initial scRNA-seq workflow, including de-multiplexing samples, Seurat object creation and cell type annotation.
 * [**Cell type-resolved IRG identification**](Codebases/Celltype_IRG_Identification.R) - Differential gene expression analysis to identify IFN-responsive genes for each cell type.
 * [**Cell type-resolved IFN-responsive peak identification**](Codebases/Celltype_IRP_Identification.R) - Differential gene expression analysis to identify IFN-responsive peaks for each cell type.
 * [**TFBS enrichment in IFN-responsive chromatin**](Codebases/Simulate_TFBS_enrich_in_IIPs.R) - Simulation-based TFBS enrichment analysis of IFN-increased chromatin regions, accounting for cell type-specific steady-state accessibility.
@@ -53,4 +53,8 @@ Data generated in this manuscript, including Seurat objects, have been deposited
 ## System Requirements
 
 ### Software Dependencies
-The analyses in this study were performed using R `[4.2.0]` and `[4.2.2]`.
+The analyses in this study were performed using R `[4.2.0]` and `[4.2.2]`, with the exception of scRNA annotation and quality control, which used R `[4.0.3]`.
+
+### Licenses
+
+- MSigDB gene sets are protected by copyright (c) 2004-2026 Broad Institute, Inc., Massachusetts Institute of Technology, and Regents of the University of California and subject to [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/) terms.
